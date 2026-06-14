@@ -59,6 +59,7 @@ make k8s-owner-references FRESH=1
 | Recipe | What you'll learn | Run it |
 | --- | --- | --- |
 | [kubernetes/owner-references.md](kubernetes/owner-references.md) | How deleting one object garbage-collects others via owner references | `make k8s-owner-references` |
+| [kubernetes/block-owner-deletion.md](kubernetes/block-owner-deletion.md) | How `blockOwnerDeletion` + foreground deletion make an owner wait for its dependents | `make k8s-block-owner-deletion` |
 
 ## Prerequisites
 
