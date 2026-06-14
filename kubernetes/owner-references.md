@@ -2,6 +2,12 @@
 
 *A tiny, hands-on tour of the Kubernetes object lifecycle.*
 
+> **Run it locally:** `make k8s-owner-references` executes every step below
+> end-to-end (it'll reuse your cluster, or spin up a local one if needed). Want
+> to go command-by-command? `make k8s-owner-references STEP=1` pauses for a
+> keypress before each step. Prefer to do it by hand? Just copy the commands as
+> you read. See the [root README](../README.md) for setup.
+
 When you delete an object in Kubernetes, sometimes a whole pile of other
 objects quietly disappears with it. Delete a Deployment and its ReplicaSets and
 Pods go too. Delete a Job and its Pods get cleaned up. This isn't magic — it's
@@ -55,6 +61,7 @@ kubectl -n ownerref-demo create configmap cm1 \
 
 This is the part you can't skip — `cm2` needs this exact value.
 
+<!-- recipe:capture CM1_UID -->
 ```bash
 CM1_UID=$(kubectl -n ownerref-demo get configmap cm1 \
   -o jsonpath='{.metadata.uid}')
@@ -99,6 +106,7 @@ kubectl -n ownerref-demo delete configmap cm1
 
 Give the garbage collector a moment, then check on `cm2`:
 
+<!-- recipe:expect-failure timeout=60 interval=2 -->
 ```bash
 kubectl -n ownerref-demo get configmap cm2
 ```
