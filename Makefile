@@ -18,7 +18,7 @@ FRESH ?=
 RUN_FLAGS := $(if $(filter 1 yes true,$(STEP)),--step,) \
              $(if $(filter 1 yes true,$(FRESH)),--fresh,)
 
-.PHONY: help cluster-up cluster-down k8s-owner-references k8s-block-owner-deletion
+.PHONY: help cluster-up cluster-down k8s-owner-references k8s-block-owner-deletion k8s-finalizers
 
 help: ## List available recipes and commands
 	@echo "Recipes you can run locally:"
@@ -38,3 +38,6 @@ k8s-owner-references: cluster-up ## Run kubernetes/owner-references.md end-to-en
 
 k8s-block-owner-deletion: cluster-up ## Run kubernetes/block-owner-deletion.md end-to-end (add STEP=1 to step through it)
 	@scripts/run-recipe.sh $(RUN_FLAGS) kubernetes/block-owner-deletion.md
+
+k8s-finalizers: cluster-up ## Run kubernetes/finalizers.md end-to-end (add STEP=1 to step through it)
+	@scripts/run-recipe.sh $(RUN_FLAGS) kubernetes/finalizers.md
