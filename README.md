@@ -61,6 +61,7 @@ make k8s-owner-references FRESH=1
 | [kubernetes/owner-references.md](kubernetes/owner-references.md) | How deleting one object garbage-collects others via owner references | `make k8s-owner-references` |
 | [kubernetes/block-owner-deletion.md](kubernetes/block-owner-deletion.md) | How `blockOwnerDeletion` + foreground deletion make an owner wait for its dependents | `make k8s-block-owner-deletion` |
 | [kubernetes/finalizers.md](kubernetes/finalizers.md) | How finalizers block a delete until cleanup runs, and how to implement one | `make k8s-finalizers` |
+| [kubernetes/controllers-and-reconcile.md](kubernetes/controllers-and-reconcile.md) | How a controller's reconcile loop works — watching Pods but reconciling ReplicaSets — by running a tiny read-only controller that prints every reconcile key | `make k8s-reconcile-observer` |
 
 ## Prerequisites
 
@@ -72,6 +73,8 @@ You only need tools for the recipe you're running.
   (`brew install kind`). If your `kubectl` already points at a cluster (Docker
   Desktop, minikube, a cloud cluster, ...), that one is used instead and `kind`
   isn't required.
+- **`controllers-and-reconcile`** additionally needs [Go](https://go.dev/dl/)
+  (`brew install go`) to build the small observer controller it runs.
 
 Don't have a cluster? `make cluster-up` creates a local one, and
 `make cluster-down` deletes it again. The teardown only ever removes the cluster
