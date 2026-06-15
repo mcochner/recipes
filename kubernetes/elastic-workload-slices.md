@@ -6,9 +6,14 @@
 > end-to-end. Step through it command-by-command with
 > `make k8s-elastic-slices STEP=1`. See the [root README](../README.md) for setup.
 >
-> **Needs a cluster with Kueue installed** (built from a branch where the
-> `ElasticJobsViaWorkloadSlices` *and* `ElasticJobsViaWorkloadSlicesSiblingCap`
-> feature gates are enabled), plus `kubectl` and [`jq`](https://jqlang.github.io/jq/).
+> **Installs Kueue for you.** `make k8s-elastic-slices` runs `make kueue-up`
+> first, which builds a local controller image from your Kueue checkout, loads it
+> into kind, and Helm-installs Kueue with the `ElasticJobsViaWorkloadSlices`
+> *and* `ElasticJobsViaWorkloadSlicesSiblingCap` feature gates enabled. Needs
+> `helm`, `kubectl`, [`jq`](https://jqlang.github.io/jq/), and a Kueue source
+> checkout (`KUEUE_SRC`, default `$HOME/code/kueue`). See the
+> [root README](../README.md#installing-kueue-and-keeping-it-across-cluster-recreations)
+> for install details.
 
 In [controllers-and-reconcile](./controllers-and-reconcile.md) we watched the
 ReplicaSet controller turn a **Pod** event into a **ReplicaSet** reconcile key.

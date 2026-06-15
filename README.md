@@ -76,10 +76,30 @@ You only need tools for the recipe you're running.
   isn't required.
 - **`controllers-and-reconcile`** additionally needs [Go](https://go.dev/dl/)
   (`brew install go`) to build the small observer controller it runs.
-- **`elastic-slices`** needs [`jq`](https://jqlang.github.io/jq/) and a cluster
-  with **Kueue** installed (built from a branch where the
+- **`elastic-slices`** needs [`jq`](https://jqlang.github.io/jq/),
+  [`helm`](https://helm.sh/docs/intro/install/) (`brew install helm`), and a
+  Kueue source checkout. Unlike the other recipes it **installs Kueue for you**:
+  `make k8s-elastic-slices` runs `make kueue-up` first, which builds a local
+  controller image, loads it into kind, and Helm-installs Kueue with the
   `ElasticJobsViaWorkloadSlices` and `ElasticJobsViaWorkloadSlicesSiblingCap`
-  feature gates are enabled). It does not create Kueue for you.
+  feature gates turned on. Point it at your checkout with `KUEUE_SRC` (default
+  `$HOME/code/kueue`), or skip the build with a prebuilt `KUEUE_IMAGE`.
+
+### Installing Kueue (and keeping it across cluster recreations)
+
+`make kueue-up` is the declarative install step. It is idempotent, so the way to
+get Kueue back after a `kind delete` (or `make cluster-down`) is simply to run it
+again — there's no manual `kubectl apply` to remember:
+
+```bash
+make kueue-up                       # build local image + load into kind + helm install
+KUEUE_SRC=~/work/kueue make kueue-up   # use a checkout elsewhere
+KUEUE_IMAGE=my/kueue:dev make kueue-up # use a prebuilt image (skips the build)
+```
+
+Under the hood it runs [`scripts/install-kueue.sh`](scripts/install-kueue.sh),
+a `helm upgrade --install` of the chart in your Kueue checkout
+(`charts/kueue`) with the elastic feature gates set via `--set`.
 
 Don't have a cluster? `make cluster-up` creates a local one, and
 `make cluster-down` deletes it again. The teardown only ever removes the cluster

@@ -18,7 +18,7 @@ FRESH ?=
 RUN_FLAGS := $(if $(filter 1 yes true,$(STEP)),--step,) \
              $(if $(filter 1 yes true,$(FRESH)),--fresh,)
 
-.PHONY: help cluster-up cluster-down k8s-owner-references k8s-block-owner-deletion k8s-finalizers k8s-reconcile-observer k8s-elastic-slices
+.PHONY: help cluster-up cluster-down kueue-up k8s-owner-references k8s-block-owner-deletion k8s-finalizers k8s-reconcile-observer k8s-elastic-slices
 
 help: ## List available recipes and commands
 	@echo "Recipes you can run locally:"
@@ -33,6 +33,9 @@ cluster-up: ## Ensure a local Kubernetes cluster is available (creates a kind cl
 cluster-down: ## Delete the local kind cluster created by 'make cluster-up'
 	@scripts/cluster-down.sh
 
+kueue-up: cluster-up ## Install Kueue (elastic gates on) via Helm using a locally-built image (needs helm + a Kueue checkout; override with KUEUE_SRC/KUEUE_IMAGE)
+	@scripts/install-kueue.sh
+
 k8s-owner-references: cluster-up ## Run kubernetes/owner-references.md end-to-end (add STEP=1 to step through it)
 	@scripts/run-recipe.sh $(RUN_FLAGS) kubernetes/owner-references.md
 
@@ -45,5 +48,5 @@ k8s-finalizers: cluster-up ## Run kubernetes/finalizers.md end-to-end (add STEP=
 k8s-reconcile-observer: cluster-up ## Run kubernetes/controllers-and-reconcile.md end-to-end (needs Go; add STEP=1 to step through it)
 	@scripts/run-recipe.sh $(RUN_FLAGS) kubernetes/controllers-and-reconcile.md
 
-k8s-elastic-slices: cluster-up ## Run kubernetes/elastic-workload-slices.md end-to-end (needs Kueue + jq; add STEP=1 to step through it)
+k8s-elastic-slices: kueue-up ## Run kubernetes/elastic-workload-slices.md end-to-end (installs Kueue with elastic gates first; needs jq; add STEP=1 to step through it)
 	@scripts/run-recipe.sh $(RUN_FLAGS) kubernetes/elastic-workload-slices.md
