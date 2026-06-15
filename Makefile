@@ -18,7 +18,7 @@ FRESH ?=
 RUN_FLAGS := $(if $(filter 1 yes true,$(STEP)),--step,) \
              $(if $(filter 1 yes true,$(FRESH)),--fresh,)
 
-.PHONY: help cluster-up cluster-down k8s-owner-references k8s-block-owner-deletion k8s-finalizers k8s-reconcile-observer
+.PHONY: help cluster-up cluster-down k8s-owner-references k8s-block-owner-deletion k8s-finalizers k8s-reconcile-observer k8s-elastic-slices
 
 help: ## List available recipes and commands
 	@echo "Recipes you can run locally:"
@@ -44,3 +44,6 @@ k8s-finalizers: cluster-up ## Run kubernetes/finalizers.md end-to-end (add STEP=
 
 k8s-reconcile-observer: cluster-up ## Run kubernetes/controllers-and-reconcile.md end-to-end (needs Go; add STEP=1 to step through it)
 	@scripts/run-recipe.sh $(RUN_FLAGS) kubernetes/controllers-and-reconcile.md
+
+k8s-elastic-slices: cluster-up ## Run kubernetes/elastic-workload-slices.md end-to-end (needs Kueue + jq; add STEP=1 to step through it)
+	@scripts/run-recipe.sh $(RUN_FLAGS) kubernetes/elastic-workload-slices.md

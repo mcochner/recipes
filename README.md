@@ -62,6 +62,7 @@ make k8s-owner-references FRESH=1
 | [kubernetes/block-owner-deletion.md](kubernetes/block-owner-deletion.md) | How `blockOwnerDeletion` + foreground deletion make an owner wait for its dependents | `make k8s-block-owner-deletion` |
 | [kubernetes/finalizers.md](kubernetes/finalizers.md) | How finalizers block a delete until cleanup runs, and how to implement one | `make k8s-finalizers` |
 | [kubernetes/controllers-and-reconcile.md](kubernetes/controllers-and-reconcile.md) | How a controller's reconcile loop works — watching Pods but reconciling ReplicaSets — by running a tiny read-only controller that prints every reconcile key | `make k8s-reconcile-observer` |
+| [kubernetes/elastic-workload-slices.md](kubernetes/elastic-workload-slices.md) | How Kueue's elastic-job ungater maps scaled-up Pods back to the *root* workload slice, and why ungating the surplus needs the sibling-slice cap | `make k8s-elastic-slices` |
 
 ## Prerequisites
 
@@ -75,6 +76,10 @@ You only need tools for the recipe you're running.
   isn't required.
 - **`controllers-and-reconcile`** additionally needs [Go](https://go.dev/dl/)
   (`brew install go`) to build the small observer controller it runs.
+- **`elastic-slices`** needs [`jq`](https://jqlang.github.io/jq/) and a cluster
+  with **Kueue** installed (built from a branch where the
+  `ElasticJobsViaWorkloadSlices` and `ElasticJobsViaWorkloadSlicesSiblingCap`
+  feature gates are enabled). It does not create Kueue for you.
 
 Don't have a cluster? `make cluster-up` creates a local one, and
 `make cluster-down` deletes it again. The teardown only ever removes the cluster
